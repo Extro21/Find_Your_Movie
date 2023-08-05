@@ -4,6 +4,8 @@ import com.practicum.imdbmovies.domain.models.Movie
 
 interface MoviesRepository {
 
-    fun searchMovies(expression : String) : List<Movie>
+    fun searchMoviesRep(expression : String) : List<Movie>
+
+    fun code() : Int
 
 }
