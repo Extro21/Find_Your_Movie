@@ -14,12 +14,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.practicum.imdbmovies.Creator
 import com.practicum.imdbmovies.domain.models.Movie
 import com.practicum.imdbmovies.MoviesAdapter
 import com.practicum.imdbmovies.ui.poster.PosterActivity
 import com.practicum.imdbmovies.R
 import com.practicum.imdbmovies.data.dto.MoviesSearchResponse
 import com.practicum.imdbmovies.data.network.IMDbApiService
+import com.practicum.imdbmovies.domain.api.MoviesInteractor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,19 +29,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class MoviesActivity : AppCompatActivity() {
-    private val imdbBaseUrl = "https://imdb-api.com"
+    private val moviesInteractor = Creator.provideMoviesInteractor()
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(imdbBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val imdbService = retrofit.create(IMDbApiService::class.java)
 
     private lateinit var queryInput: EditText
     private lateinit var placeholderMessage: TextView
@@ -61,6 +56,7 @@ class MoviesActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
 
     private val searchRunnable = Runnable { searchRequest() }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,32 +99,28 @@ class MoviesActivity : AppCompatActivity() {
             moviesList.visibility = View.GONE
             progressBar.visibility = View.VISIBLE
 
-            imdbService.findMovies(queryInput.text.toString()).enqueue(object :
-                Callback<MoviesSearchResponse> {
-                override fun onResponse(call: Call<MoviesSearchResponse>,
-                                        response: Response<MoviesSearchResponse>
-                ) {
-                    progressBar.visibility = View.GONE
-                    if (response.code() == 200) {
-                        movies.clear()
-                        if (response.body()?.results?.isNotEmpty() == true) {
-                            moviesList.visibility = View.VISIBLE
-                            movies.addAll(response.body()?.results!!)
-                            adapter.notifyDataSetChanged()
-                        }
-                        if (movies.isEmpty()) {
-                            showMessage(getString(R.string.nothing_found), "")
+            moviesInteractor.searchMovies(queryInput.text.toString(), object : MoviesInteractor.MoviesConsumer {
+                override fun consume(foundMovies: List<Movie>, code : Int) {
+                    handler.post {
+                        if(code != 200){
+                            showMessage(getString(R.string.nothing_internet), "")
+                            progressBar.visibility = View.GONE
                         } else {
-                            hideMessage()
-                        }
-                    } else {
-                        showMessage(getString(R.string.something_went_wrong), response.code().toString())
-                    }
-                }
+                            progressBar.visibility = View.GONE
+                            movies.clear()
+                            movies.addAll(foundMovies)
+                            moviesList.visibility = View.VISIBLE
+                            adapter.notifyDataSetChanged()
 
-                override fun onFailure(call: Call<MoviesSearchResponse>, t: Throwable) {
-                    progressBar.visibility = View.GONE
-                    showMessage(getString(R.string.something_went_wrong), t.message.toString())
+                            if (movies.isEmpty()) {
+                                showMessage(getString(R.string.nothing_found), "")
+                            } else {
+                               hideMessage()
+                            }
+                        }
+
+
+                    }
                 }
             })
         }

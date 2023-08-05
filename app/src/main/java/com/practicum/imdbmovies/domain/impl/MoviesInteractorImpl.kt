@@ -12,7 +12,7 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
     override fun searchMovies(expression: String, consumer: MoviesInteractor.MoviesConsumer) {
 
         executor.execute {
-            consumer.consume(repository.searchMovies(expression))
+            consumer.consume(repository.searchMoviesRep(expression), repository.code())
         }
 
     }

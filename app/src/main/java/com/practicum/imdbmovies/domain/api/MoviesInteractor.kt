@@ -8,7 +8,7 @@ interface MoviesInteractor {
     fun searchMovies(expression: String, consumer: MoviesConsumer)
 
     interface MoviesConsumer {
-        fun consume(foundMovies: List<Movie>)
+        fun consume(foundMovies: List<Movie>, code : Int)
     }
 
 
