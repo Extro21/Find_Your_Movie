@@ -2,6 +2,7 @@ package com.practicum.imdbmovies.domain.impl
 
 import com.practicum.imdbmovies.domain.api.MoviesInteractor
 import com.practicum.imdbmovies.domain.api.MoviesRepository
+import com.practicum.imdbmovies.util.Resource
 import java.util.concurrent.Executors
 
 class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInteractor {
@@ -12,7 +13,11 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
     override fun searchMovies(expression: String, consumer: MoviesInteractor.MoviesConsumer) {
 
         executor.execute {
-            consumer.consume(repository.searchMoviesRep(expression), repository.code())
+            when(val resource  = repository.searchMoviesRep(expression)){
+                is Resource.Success -> consumer.consume(resource.data, null)
+                is Resource.Error -> consumer.consume(null, resource.message)
+            }
+
         }
 
     }
