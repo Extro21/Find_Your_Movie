@@ -2,13 +2,11 @@ package com.practicum.imdbmovies.util
 
 import android.app.Activity
 import android.content.Context
-import com.practicum.imdbmovies.MoviesAdapter
 import com.practicum.imdbmovies.data.dto.MoviesRepositoryImpl
 import com.practicum.imdbmovies.data.network.RetrofitNetworkClient
 import com.practicum.imdbmovies.domain.api.MoviesInteractor
 import com.practicum.imdbmovies.domain.api.MoviesRepository
 import com.practicum.imdbmovies.domain.impl.MoviesInteractorImpl
-import com.practicum.imdbmovies.presentation.MoviesSearchController
 import com.practicum.imdbmovies.presentation.PosterController
 
 
@@ -22,11 +20,11 @@ object Creator {
 //        return MoviesInteractorImpl(getMoviesRepository())
 //    }
 
-    fun provideMoviesSearchController(activity: Activity, adapter: MoviesAdapter): MoviesSearchController {
-        return MoviesSearchController(activity, adapter)
-    }
+//    fun provideMoviesSearchPresenter(moviesView: MoviesView, adapter: MoviesAdapter): MoviesSearchPresenter {
+//        return MoviesSearchPresenter(moviesView, adapter)
+//    }
 
-    fun providePosterController(activity: Activity): PosterController {
+    fun providePosterPresenter(activity: Activity): PosterController {
         return PosterController(activity)
     }
 
