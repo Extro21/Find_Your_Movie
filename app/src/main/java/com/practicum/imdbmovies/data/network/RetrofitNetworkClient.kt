@@ -5,6 +5,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.practicum.imdbmovies.data.NetworkClient
+import com.practicum.imdbmovies.data.dto.MovieDetailsRequest
+import com.practicum.imdbmovies.data.dto.MovieDetailsResponse
 import com.practicum.imdbmovies.data.dto.MoviesSearchRequest
 import com.practicum.imdbmovies.data.dto.Response
 
@@ -24,8 +26,10 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
 
     //Проверка на доступность интернета на устройстве
     private fun isConnected(): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         if (capabilities != null) {
             when {
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> return true
@@ -41,11 +45,15 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
         if (isConnected() == false) {
             return Response().apply { resultCode = -1 }
         }
-        if (dto !is MoviesSearchRequest) {
+        if ((dto !is MoviesSearchRequest) && (dto !is MovieDetailsResponse)) {
             return Response().apply { resultCode = 400 }
         }
 
-        val response = imdbService.findMovies(dto.expression).execute()
+        val response = if (dto is MoviesSearchRequest) {
+            imdbService.findMovies(dto.expression).execute()
+        } else {
+            imdbService.getMovieDetails((dto as MovieDetailsRequest).movieId).execute()
+        }
         val body = response.body()
         return if (body != null) {
             body.apply { resultCode = response.code() }

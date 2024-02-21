@@ -3,6 +3,7 @@ package com.practicum.imdbmovies.data.dto
 import com.practicum.imdbmovies.data.NetworkClient
 import com.practicum.imdbmovies.domain.api.MoviesRepository
 import com.practicum.imdbmovies.domain.models.Movie
+import com.practicum.imdbmovies.domain.models.MovieDetails
 import com.practicum.imdbmovies.util.Resource
 
 class MoviesRepositoryImpl(private val networkClient: NetworkClient) : MoviesRepository {
@@ -21,6 +22,22 @@ class MoviesRepositoryImpl(private val networkClient: NetworkClient) : MoviesRep
                 Resource.Success((response as MoviesSearchResponse).results.map {
                     Movie(it.id, it.resultType, it.image, it.title, it.description)
                 })
+            }
+            else -> Resource.Error("Ошибка сервера")
+        }
+
+    }
+
+
+
+    override fun getMovieDetails(movieId: String): Resource<MovieDetails> {
+        val response = networkClient.doRequest(MovieDetailsRequest(movieId))
+        return when (response.resultCode) {
+            -1 -> Resource.Error("Проверьте подключение к интернету")
+            200 ->
+                with(response as MovieDetailsResponse) {
+                Resource.Success(MovieDetails(id, title, imDbRating, year,
+                    countries, genres, directors, writers, stars, plot))
             }
             else -> Resource.Error("Ошибка сервера")
         }
