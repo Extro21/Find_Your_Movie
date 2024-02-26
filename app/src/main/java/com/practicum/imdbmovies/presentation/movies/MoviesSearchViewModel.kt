@@ -1,42 +1,28 @@
 package com.practicum.imdbmovies.presentation.movies
 
-import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import androidx.lifecycle.AndroidViewModel
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.practicum.imdbmovies.util.Creator
-import com.practicum.imdbmovies.R
+import androidx.lifecycle.ViewModel
 import com.practicum.imdbmovies.domain.api.MoviesInteractor
-import com.practicum.imdbmovies.domain.models.Movie
+import com.practicum.imdbmovies.domain.models.KinopoiskModel
 
-class MoviesSearchViewModel(application: Application) : AndroidViewModel(application) {
+class MoviesSearchViewModel(
+    private val moviesInteractor: MoviesInteractor
+) : ViewModel() {
 
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                MoviesSearchViewModel(this[APPLICATION_KEY] as Application)
-            }
-        }
     }
 
-    private val moviesInteractor = Creator.provideMoviesInteractor(getApplication())
     private val handler = Handler(Looper.getMainLooper())
 
     private val stateLiveData = MutableLiveData<MoviesState>()
     fun observeState(): LiveData<MoviesState> = stateLiveData
-
-//    private val showToast = MutableLiveData<String>()
-//    fun observeShowToast(): LiveData<String> = showToast
 
     private var latestSearchText: String? = null
 
@@ -67,27 +53,27 @@ class MoviesSearchViewModel(application: Application) : AndroidViewModel(applica
             renderState(MoviesState.Loading)
 
             moviesInteractor.searchMovies(newSearchText, object : MoviesInteractor.MoviesConsumer {
-                override fun consume(foundMovies: List<Movie>?, errorMessage: String?) {
-                    val movies = mutableListOf<Movie>()
+                override fun consume(foundMovies: List<KinopoiskModel>?, errorMessage: String?) {
+                    val movies = mutableListOf<KinopoiskModel>()
                     if (foundMovies != null) {
-                        movies.addAll(foundMovies)
+                        val moviesFilter = foundMovies.filter {
+                            it.image != null && it.name?.isNotEmpty() == true
+                        }
+                        movies.addAll(moviesFilter)
+                        Log.d("listMovie", movies.toString())
                     }
 
                     when {
                         errorMessage != null -> {
+                            Log.d("retrifitSearch", errorMessage)
                             renderState(
-                                MoviesState.Error(
-                                    getApplication<Application>().getString(R.string.something_went_wrong),
-                                )
+                                MoviesState.Error("Исправить текст")
                             )
-                          //  showToast.postValue(errorMessage)
                         }
 
                         movies.isEmpty() -> {
                             renderState(
-                                MoviesState.Empty(
-                                    getApplication<Application>().getString(R.string.nothing_found),
-                                )
+                                MoviesState.Empty("Исправить текст")
                             )
                         }
 

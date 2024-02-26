@@ -1,4 +1,4 @@
-package com.practicum.imdbmovies
+package com.practicum.imdbmovies.ui.movies.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,7 +6,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.practicum.imdbmovies.domain.models.Movie
+import com.practicum.imdbmovies.R
+import com.practicum.imdbmovies.domain.models.KinopoiskModel
 
 class MovieViewHolder(parent: ViewGroup) :
     RecyclerView.ViewHolder(
@@ -17,12 +18,12 @@ class MovieViewHolder(parent: ViewGroup) :
     var title: TextView = itemView.findViewById(R.id.title)
     var description: TextView = itemView.findViewById(R.id.description)
 
-    fun bind(movie: Movie) {
+    fun bind(movie: KinopoiskModel) {
         Glide.with(itemView)
             .load(movie.image)
             .into(cover)
 
-        title.text = movie.title
+        title.text = movie.name
         description.text = movie.description
     }
 }

@@ -15,4 +15,5 @@ interface IMDbApiService {
     @GET("/en/API/Title/k_zcuw1ytf/{movie_id}")
     fun getMovieDetails(@Path("movie_id") movieId: String): Call<MovieDetailsResponse>
 
+
 }
