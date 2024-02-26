@@ -18,11 +18,17 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RetrofitNetworkClient(private val context: Context) : NetworkClient {
 
     private val imdbBaseUrl = "https://imdb-api.com"
+    private val kinopoiskUrl = "https://api.kinopoisk.dev"
 
-    private val retrofit =
+    private val retrofitImdb =
         Retrofit.Builder().baseUrl(imdbBaseUrl).addConverterFactory(GsonConverterFactory.create())
             .build()
-    private val imdbService = retrofit.create(IMDbApiService::class.java)
+    private val imdbService = retrofitImdb.create(IMDbApiService::class.java)
+
+    private val retrofitKinopoisk =
+        Retrofit.Builder().baseUrl(kinopoiskUrl).addConverterFactory(GsonConverterFactory.create())
+            .build()
+    private val kinopoiskService = retrofitKinopoisk.create(KinopoiskApi::class.java)
 
     //Проверка на доступность интернета на устройстве
     private fun isConnected(): Boolean {
@@ -50,7 +56,8 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
         }
 
         val response = if (dto is MoviesSearchRequest) {
-            imdbService.findMovies(dto.expression).execute()
+           // imdbService.findMovies(dto.expression).execute()
+            kinopoiskService.findMovies(dto.expression).execute()
         } else {
             imdbService.getMovieDetails((dto as MovieDetailsRequest).movieId).execute()
         }

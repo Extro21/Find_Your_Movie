@@ -1,6 +1,6 @@
-package com.practicum.imdbmovies.data.dto
+package com.practicum.imdbmovies.data.kinoDto
 
-data class MovieDto(
+data class KinopoiskDto(
     val id: String,
     val resultType: String,
     val image: String,

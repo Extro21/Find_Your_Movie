@@ -1,6 +1,6 @@
 package com.practicum.imdbmovies.domain.api
 
-import com.practicum.imdbmovies.domain.models.Movie
+import com.practicum.imdbmovies.domain.models.KinopoiskModel
 import com.practicum.imdbmovies.domain.models.MovieDetails
 
 interface MoviesInteractor {
@@ -9,7 +9,7 @@ interface MoviesInteractor {
     fun searchMovies(expression: String, consumer: MoviesConsumer)
 
     interface MoviesConsumer {
-        fun consume(foundMovies: List<Movie>?, errorMessage : String?)
+        fun consume(foundMovies: List<KinopoiskModel>?, errorMessage: String?)
     }
 
     interface MovieDetailsConsumer {

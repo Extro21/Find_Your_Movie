@@ -2,23 +2,31 @@ package com.practicum.imdbmovies.ui.poster
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.practicum.imdbmovies.util.Creator
-import com.practicum.imdbmovies.R
+import com.bumptech.glide.Glide
+import com.practicum.imdbmovies.databinding.ActivityPosterBinding
 
 class PosterActivity : AppCompatActivity() {
-   // private lateinit var poster: ImageView
 
-    private val posterController = Creator.providePosterPresenter(this)
+    private var _binding: ActivityPosterBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_poster)
-        posterController.onCreate()
-//        poster = findViewById(R.id.poster)
-//        val url = intent.extras?.getString("poster", "")
-//
-//        Glide.with(applicationContext)
-//            .load(url)
-//            .into(poster)
+        _binding = ActivityPosterBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        showPoster()
+    }
+
+    private fun showPoster() {
+        val url = intent.extras?.getString("poster", "")
+
+        Glide.with(applicationContext)
+            .load(url)
+            .into(binding.poster)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
