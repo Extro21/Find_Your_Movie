@@ -1,36 +1,43 @@
 package com.practicum.imdbmovies.ui.movies
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
-import androidx.activity.ComponentActivity
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.practicum.imdbmovies.ui.movies.adapter.MoviesAdapter
-import com.practicum.imdbmovies.databinding.ActivityMoviesBinding
+import com.practicum.imdbmovies.R
+import com.practicum.imdbmovies.databinding.FragmentMoviesBinding
 import com.practicum.imdbmovies.domain.models.KinopoiskModel
 import com.practicum.imdbmovies.presentation.movies.MoviesSearchViewModel
 import com.practicum.imdbmovies.presentation.movies.MoviesState
-import com.practicum.imdbmovies.ui.poster.PosterActivity
+import com.practicum.imdbmovies.ui.movies.adapter.MoviesAdapter
+import com.practicum.imdbmovies.ui.poster.PosterFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MoviesActivity : ComponentActivity() {
+class MoviesFragment : Fragment() {
 
-    private var _binding: ActivityMoviesBinding? = null
+    private var _binding: FragmentMoviesBinding? = null
     private val binding get() = _binding!!
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    private val adapter = MoviesAdapter {
+    private val adapter = MoviesAdapter { movie ->
         if (clickDebounce()) {
-            val intent = Intent(this, PosterActivity::class.java)
-            intent.putExtra("poster", it.image)
-            startActivity(intent)
+            findNavController().navigate(R.id.action_moviesFragment_to_posterFragment,
+                PosterFragment.createArgs(movie.image)
+                )
+
+            //val intent = Intent(this, PosterActivity::class.java)
+            //intent.putExtra("poster", it.image)
+           // startActivity(intent)
         }
     }
 
@@ -39,12 +46,18 @@ class MoviesActivity : ComponentActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private val viewModel by viewModel<MoviesSearchViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        _binding = ActivityMoviesBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentMoviesBinding.inflate(inflater)
+        return binding.root
+    }
 
-        binding.moviesList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.moviesList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.moviesList.adapter = adapter
 
         textWatcher = object : TextWatcher {
@@ -62,15 +75,10 @@ class MoviesActivity : ComponentActivity() {
         }
         textWatcher.let { binding.queryInput.addTextChangedListener(it) }
 
-        viewModel.observeState().observe(this) {
+        viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
-    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-        textWatcher.let { binding.queryInput.removeTextChangedListener(it) }
     }
 
     private fun render(state: MoviesState) {
@@ -115,6 +123,11 @@ class MoviesActivity : ComponentActivity() {
             handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
         }
         return current
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }
