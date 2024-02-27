@@ -10,12 +10,8 @@ sealed interface MoviesState {
         val movies: List<KinopoiskModel>
     ) : MoviesState
 
-    data class Error(
-        val errorMessage: String
-    ) : MoviesState
+    object Error : MoviesState
 
-    data class Empty(
-        val message: String
-    ) : MoviesState
+    object Empty : MoviesState
 
 }

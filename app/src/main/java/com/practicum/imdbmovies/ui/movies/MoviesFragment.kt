@@ -91,8 +91,8 @@ class MoviesFragment : Fragment() {
     private fun render(state: MoviesState) {
         when (state) {
             is MoviesState.Content -> showContent(state.movies)
-            is MoviesState.Empty -> showEmpty(state.message)
-            is MoviesState.Error -> showError(state.errorMessage)
+            is MoviesState.Empty -> showEmpty()
+            is MoviesState.Error -> showError()
             is MoviesState.Loading -> showLoading()
         }
     }
@@ -103,15 +103,18 @@ class MoviesFragment : Fragment() {
         progressBar.visibility = View.VISIBLE
     }
 
-    private fun showError(errorMessage: String) = with(binding) {
+    private fun showError() = with(binding) {
         moviesList.visibility = View.GONE
         placeholderMessage.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
-        placeholderMessage.text = errorMessage
+        placeholderMessage.text = getString(R.string.nothing_internet)
     }
 
-    private fun showEmpty(emptyMessage: String) {
-        showError(emptyMessage)
+    private fun showEmpty() = with(binding) {
+        moviesList.visibility = View.GONE
+        placeholderMessage.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
+        placeholderMessage.text = getString(R.string.nothing_found)
     }
 
     private fun showContent(movies: List<KinopoiskModel>) = with(binding) {
