@@ -1,7 +1,6 @@
 package com.practicum.imdbmovies.ui.movies.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.imdbmovies.R
@@ -14,20 +13,12 @@ class MoviesAdapter(private val clickListener: MovieClickListener) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val view =  LayoutInflater.from(parent.context).inflate(R.layout.list_item_movie, parent, false)
-        return MovieViewHolder(view)
+        return MovieViewHolder(view, clickListener)
 
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        // 2
         holder.bind(movies[position])
-        holder.itemView.setOnClickListener {
-            clickListener.onMovieClick(movies[position])
-        }
-
-        holder.itemView.setOnClickListener {
-            clickListener.onFavoriteToggleClick(movies[position])
-        }
     }
 
     override fun getItemCount(): Int = movies.size

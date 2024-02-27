@@ -5,7 +5,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import com.practicum.imdbmovies.data.NetworkClient
-import com.practicum.imdbmovies.data.dto.MovieDetailsRequest
 import com.practicum.imdbmovies.data.dto.MovieDetailsResponse
 import com.practicum.imdbmovies.data.dto.MoviesSearchRequest
 import com.practicum.imdbmovies.data.dto.Response
@@ -46,28 +45,50 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
         return false
     }
 
-    //Поиск с проверкой доступа в интенет
-    override fun doRequest(dto: Any): Response {
+    override suspend fun doRequest(dto: Any): Response {
         if (isConnected() == false) {
             return Response().apply { resultCode = -1 }
         }
         if ((dto !is MoviesSearchRequest) && (dto !is MovieDetailsResponse)) {
             return Response().apply { resultCode = 400 }
         }
+        return try {
+            if (dto is MoviesSearchRequest) {
+                val resp = kinopoiskService.findMovies(dto.expression)
+                resp.apply { resultCode = 200 }
+            } else {
+                Response().apply { resultCode = 500 }
+//                imdbService.getMovieDetails((dto as MovieDetailsRequest).movieId).execute()
+            }
+        } catch (e: Exception) {
+            Response().apply { resultCode = 500 }
+        }
 
-        val response = if (dto is MoviesSearchRequest) {
-           // imdbService.findMovies(dto.expression).execute()
-            kinopoiskService.findMovies(dto.expression).execute()
-        } else {
-            imdbService.getMovieDetails((dto as MovieDetailsRequest).movieId).execute()
-        }
-        val body = response.body()
-        return if (body != null) {
-            body.apply { resultCode = response.code() }
-        } else {
-            Response().apply { resultCode = response.code() }
-        }
+
     }
+
+    //Поиск с проверкой доступа в интенет
+//    override fun doRequest(dto: Any): Response {
+//        if (isConnected() == false) {
+//            return Response().apply { resultCode = -1 }
+//        }
+//        if ((dto !is MoviesSearchRequest) && (dto !is MovieDetailsResponse)) {
+//            return Response().apply { resultCode = 400 }
+//        }
+//
+//        val response = if (dto is MoviesSearchRequest) {
+//
+//            kinopoiskService.findMovies(dto.expression).execute()
+//        } else {
+//            imdbService.getMovieDetails((dto as MovieDetailsRequest).movieId).execute()
+//        }
+//        val body = response.body()
+//        return if (body != null) {
+//            body.apply { resultCode = response.code() }
+//        } else {
+//            Response().apply { resultCode = response.code() }
+//        }
+//    }
 
     //Поиск без проверки доступа в интенет
 //    override fun doRequest(dto: Any): Response {

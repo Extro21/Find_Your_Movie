@@ -3,13 +3,14 @@ package com.practicum.imdbmovies.presentation.movies
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.imdbmovies.domain.api.MoviesInteractor
 import com.practicum.imdbmovies.domain.models.KinopoiskModel
+import kotlinx.coroutines.launch
 
 class MoviesSearchViewModel(
     private val moviesInteractor: MoviesInteractor
@@ -37,6 +38,7 @@ class MoviesSearchViewModel(
             }
         }
     }
+
     fun observeState(): LiveData<MoviesState> = mediatorStateLiveData
 
     override fun onCleared() {
@@ -89,43 +91,42 @@ class MoviesSearchViewModel(
         if (newSearchText.isNotEmpty()) {
             renderState(MoviesState.Loading)
 
-            moviesInteractor.searchMovies(newSearchText, object : MoviesInteractor.MoviesConsumer {
-                override fun consume(foundMovies: List<KinopoiskModel>?, errorMessage: String?) {
-                    val movies = mutableListOf<KinopoiskModel>()
-                    if (foundMovies != null) {
-                        val moviesFilter = foundMovies.filter {
-                            it.image != null && it.name?.isNotEmpty() == true
-                        }
-                        movies.addAll(moviesFilter)
-                        Log.d("listMovie", movies.toString())
+            viewModelScope.launch {
+                moviesInteractor.searchMovies(newSearchText)
+                    .collect { pair ->
+                        processResult(pair.first, pair.second)
                     }
-
-                    when {
-                        errorMessage != null -> {
-                            Log.d("retrifitSearch", errorMessage)
-                            renderState(
-                                MoviesState.Error("Исправить текст")
-                            )
-                        }
-
-                        movies.isEmpty() -> {
-                            renderState(
-                                MoviesState.Empty("Исправить текст")
-                            )
-                        }
-
-                        else -> {
-                            renderState(
-                                MoviesState.Content(
-                                    movies = movies,
-                                )
-                            )
-                        }
-                    }
-
-                }
-            })
+            }
         }
+    }
+
+    private fun processResult(foundMovies: List<KinopoiskModel>?, errorMessage: String?) {
+        val movies = mutableListOf<KinopoiskModel>()
+        if (foundMovies != null) {
+            val moviesFilter = foundMovies.filter {
+                it.image != null && it.name?.isNotEmpty() == true
+            }
+            movies.addAll(moviesFilter)
+        }
+
+        when {
+            errorMessage != null -> {
+                renderState(MoviesState.Error)
+            }
+
+            movies.isEmpty() -> {
+                renderState(MoviesState.Empty)
+            }
+
+            else -> {
+                renderState(
+                    MoviesState.Content(
+                        movies
+                    )
+                )
+            }
+        }
+
     }
 
     private fun renderState(state: MoviesState) {
