@@ -17,4 +17,7 @@ interface MoviesInteractor {
     }
 
     fun getMoviesDetails(movieId: String, consumer: MovieDetailsConsumer)
+
+    fun addMovieToFavorites(movie: KinopoiskModel)
+    fun removeMovieFromFavorites(movie: KinopoiskModel)
 }

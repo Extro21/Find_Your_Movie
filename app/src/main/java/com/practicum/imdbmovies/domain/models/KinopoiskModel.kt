@@ -8,5 +8,6 @@ data class KinopoiskModel(
     val id: String,
     val image: String?,
     val name: String?,
-    val description: String?
+    val description: String?,
+    val inFavorite: Boolean,
 ): Parcelable

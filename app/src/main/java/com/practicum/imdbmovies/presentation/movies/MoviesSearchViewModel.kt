@@ -5,6 +5,7 @@ import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.practicum.imdbmovies.domain.api.MoviesInteractor
@@ -22,9 +23,21 @@ class MoviesSearchViewModel(
     private val handler = Handler(Looper.getMainLooper())
 
     private val stateLiveData = MutableLiveData<MoviesState>()
-    fun observeState(): LiveData<MoviesState> = stateLiveData
+    //fun observeState(): LiveData<MoviesState> = stateLiveData
 
     private var latestSearchText: String? = null
+
+    private val mediatorStateLiveData = MediatorLiveData<MoviesState>().also { liveData ->
+        liveData.addSource(stateLiveData) { movieState ->
+            liveData.value = when (movieState) {
+                is MoviesState.Content -> MoviesState.Content(movieState.movies.sortedByDescending { it.inFavorite })
+                is MoviesState.Empty -> movieState
+                is MoviesState.Error -> movieState
+                is MoviesState.Loading -> movieState
+            }
+        }
+    }
+    fun observeState(): LiveData<MoviesState> = mediatorStateLiveData
 
     override fun onCleared() {
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
@@ -46,6 +59,30 @@ class MoviesSearchViewModel(
             SEARCH_REQUEST_TOKEN,
             postTime,
         )
+    }
+
+    fun toggleFavorite(movie: KinopoiskModel) {
+        if (movie.inFavorite) {
+            moviesInteractor.removeMovieFromFavorites(movie)
+        } else {
+            moviesInteractor.addMovieToFavorites(movie)
+        }
+        updateMovieContent(movie.id, movie.copy(inFavorite = !movie.inFavorite))
+    }
+
+    private fun updateMovieContent(movieId: String, newMovie: KinopoiskModel) {
+        val currentState = stateLiveData.value
+        if (currentState is MoviesState.Content) {
+            val movieIndex = currentState.movies.indexOfFirst { it.id == movieId }
+
+            if (movieIndex != -1) {
+                stateLiveData.value = MoviesState.Content(
+                    currentState.movies.toMutableList().also {
+                        it[movieIndex] = newMovie
+                    }
+                )
+            }
+        }
     }
 
     private fun searchRequest(newSearchText: String) {

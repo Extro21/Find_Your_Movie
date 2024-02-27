@@ -7,7 +7,7 @@ sealed interface MoviesState {
     object Loading : MoviesState
 
     data class Content(
-        val movies: MutableList<KinopoiskModel>
+        val movies: List<KinopoiskModel>
     ) : MoviesState
 
     data class Error(
