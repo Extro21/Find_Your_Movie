@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,26 +26,32 @@ class MoviesFragment : Fragment() {
     private var _binding: FragmentMoviesBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel by viewModel<MoviesSearchViewModel>()
+
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
-    private val adapter = MoviesAdapter { movie ->
-        if (clickDebounce()) {
-            findNavController().navigate(R.id.action_moviesFragment_to_posterFragment,
-                PosterFragment.createArgs(movie.image)
-                )
+    private val adapter = MoviesAdapter(
+        object  : MoviesAdapter.MovieClickListener {
+            override fun onMovieClick(movie: KinopoiskModel) {
+                if (clickDebounce()) {
+                    findNavController().navigate(R.id.action_moviesFragment_to_posterFragment,
+                        PosterFragment.createArgs(movie.image)
+                    )
+                }
+            }
 
-            //val intent = Intent(this, PosterActivity::class.java)
-            //intent.putExtra("poster", it.image)
-           // startActivity(intent)
+            override fun onFavoriteToggleClick(movie: KinopoiskModel) {
+                viewModel.toggleFavorite(movie)
+            }
         }
-    }
+    )
 
     private lateinit var textWatcher: TextWatcher
     private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper())
-    private val viewModel by viewModel<MoviesSearchViewModel>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -111,6 +118,7 @@ class MoviesFragment : Fragment() {
         moviesList.visibility = View.VISIBLE
         placeholderMessage.visibility = View.GONE
         progressBar.visibility = View.GONE
+        Log.d("showContent", movies.toString())
         adapter.movies.clear()
         adapter.movies.addAll(movies)
         adapter.notifyDataSetChanged()

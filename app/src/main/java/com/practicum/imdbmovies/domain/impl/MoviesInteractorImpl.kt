@@ -2,6 +2,7 @@ package com.practicum.imdbmovies.domain.impl
 
 import com.practicum.imdbmovies.domain.api.MoviesInteractor
 import com.practicum.imdbmovies.domain.api.MoviesRepository
+import com.practicum.imdbmovies.domain.models.KinopoiskModel
 import com.practicum.imdbmovies.util.Resource
 import java.util.concurrent.Executors
 
@@ -29,5 +30,13 @@ class MoviesInteractorImpl(private val repository: MoviesRepository) : MoviesInt
                 is Resource.Error -> { consumer.consume(resource.data, resource.message) }
             }
         }
+    }
+
+    override fun addMovieToFavorites(movie: KinopoiskModel) {
+        repository.addMovieToFavorites(movie)
+    }
+
+    override fun removeMovieFromFavorites(movie: KinopoiskModel) {
+        repository.removeMovieFromFavorites(movie)
     }
 }

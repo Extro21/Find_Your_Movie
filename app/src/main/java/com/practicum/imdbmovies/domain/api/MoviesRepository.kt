@@ -12,4 +12,7 @@ interface MoviesRepository {
     
     fun getMovieDetails(movieId: String): Resource<MovieDetails>
 
+    fun addMovieToFavorites(movie: KinopoiskModel)
+    fun removeMovieFromFavorites(movie: KinopoiskModel)
+
 }
