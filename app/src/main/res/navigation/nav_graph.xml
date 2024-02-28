@@ -6,16 +6,24 @@
     app:startDestination="@id/moviesFragment">
     <fragment
         android:id="@+id/moviesFragment"
-        android:name="com.practicum.imdbmovies.ui.movies.MoviesFragment"
+        android:name="com.practicum.imdbmovies.ui.search.MoviesFragment"
         android:label="fragment_movies"
         tools:layout="@layout/fragment_movies" >
         <action
             android:id="@+id/action_moviesFragment_to_posterFragment"
             app:destination="@id/posterFragment" />
+        <action
+            android:id="@+id/action_moviesFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/posterFragment"
         android:name="com.practicum.imdbmovies.ui.poster.PosterFragment"
         android:label="poster_fragment"
         tools:layout="@layout/poster_fragment" />
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.practicum.imdbmovies.ui.details.DetailsFragment"
+        android:label="details_fragment"
+        tools:layout="@layout/details_fragment" />
 </navigation>

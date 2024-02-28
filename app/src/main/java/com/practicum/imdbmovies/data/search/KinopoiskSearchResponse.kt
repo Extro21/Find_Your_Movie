@@ -1,6 +1,4 @@
-package com.practicum.imdbmovies.data.kinoDto
-
-import com.practicum.imdbmovies.data.dto.Response
+package com.practicum.imdbmovies.data.search
 
 data class KinopoiskSearchResponse(
     val docs: List<Doc>,

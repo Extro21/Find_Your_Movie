@@ -1,4 +1,4 @@
-package com.practicum.imdbmovies.presentation.movies
+package com.practicum.imdbmovies.ui.search
 
 import android.os.Handler
 import android.os.Looper
@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.imdbmovies.domain.api.MoviesInteractor
 import com.practicum.imdbmovies.domain.models.KinopoiskModel
+import com.practicum.imdbmovies.ui.MoviesState
 import kotlinx.coroutines.launch
 
 class MoviesSearchViewModel(

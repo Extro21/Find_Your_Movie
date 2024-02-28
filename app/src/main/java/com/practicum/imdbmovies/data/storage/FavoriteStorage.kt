@@ -1,9 +1,9 @@
-package com.practicum.imdbmovies.data
+package com.practicum.imdbmovies.data.storage
 
 import android.content.Context
 import android.content.SharedPreferences
 
-class LocalStorage(context: Context) {
+class FavoriteStorage(context: Context) {
 
     private val sharedPref: SharedPreferences = context.getSharedPreferences("local_storage", Context.MODE_PRIVATE)
 

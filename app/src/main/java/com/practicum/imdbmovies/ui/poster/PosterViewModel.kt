@@ -1,4 +1,4 @@
-package com.practicum.imdbmovies.presentation
+package com.practicum.imdbmovies.ui.poster
 
 import androidx.lifecycle.ViewModel
 
