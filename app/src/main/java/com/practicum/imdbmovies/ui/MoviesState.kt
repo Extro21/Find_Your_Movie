@@ -1,7 +1,6 @@
-package com.practicum.imdbmovies.presentation.movies
+package com.practicum.imdbmovies.ui
 
 import com.practicum.imdbmovies.domain.models.KinopoiskModel
-
 sealed interface MoviesState {
 
     object Loading : MoviesState

@@ -9,6 +9,17 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="name_title">Фильмы</string>
+    <string name="poster">ПОСТЕР</string>
+    <string name="details">О ФИЛЬМЕ</string>
+    <string name="rating">Рейтинг IMDb:</string>
+    <string name="year">Год:</string>
+    <string name="country">Страна:</string>
+    <string name="genre">Жанр:</string>
+    <string name="director">Режиссёр:</string>
+    <string name="writer">Сценарист:</string>
+    <string name="cast">В ролях:</string>
+    <string name="plot">Сюжет:</string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
@@ -46,4 +57,5 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+    <string name="actors">Актёры</string>
 </resources>

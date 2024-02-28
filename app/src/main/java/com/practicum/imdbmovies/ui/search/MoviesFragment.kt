@@ -1,11 +1,10 @@
-package com.practicum.imdbmovies.ui.movies
+package com.practicum.imdbmovies.ui.search
 
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.imdbmovies.R
 import com.practicum.imdbmovies.databinding.FragmentMoviesBinding
 import com.practicum.imdbmovies.domain.models.KinopoiskModel
-import com.practicum.imdbmovies.presentation.movies.MoviesSearchViewModel
-import com.practicum.imdbmovies.presentation.movies.MoviesState
-import com.practicum.imdbmovies.ui.movies.adapter.MoviesAdapter
-import com.practicum.imdbmovies.ui.poster.PosterFragment
+import com.practicum.imdbmovies.ui.MoviesState
+import com.practicum.imdbmovies.ui.details.DetailsFragment
+import com.practicum.imdbmovies.ui.search.adapter.MoviesAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment : Fragment() {
@@ -36,8 +34,11 @@ class MoviesFragment : Fragment() {
         object  : MoviesAdapter.MovieClickListener {
             override fun onMovieClick(movie: KinopoiskModel) {
                 if (clickDebounce()) {
-                    findNavController().navigate(R.id.action_moviesFragment_to_posterFragment,
-                        PosterFragment.createArgs(movie.image)
+//                    findNavController().navigate(R.id.action_moviesFragment_to_posterFragment,
+//                        PosterFragment.createArgs(movie.image)
+//                    )
+                    findNavController().navigate(R.id.action_moviesFragment_to_detailsFragment,
+                        DetailsFragment.createArgs(movie.id)
                     )
                 }
             }
@@ -66,6 +67,7 @@ class MoviesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.moviesList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.moviesList.adapter = adapter
+
 
         textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -121,7 +123,6 @@ class MoviesFragment : Fragment() {
         moviesList.visibility = View.VISIBLE
         placeholderMessage.visibility = View.GONE
         progressBar.visibility = View.GONE
-        Log.d("showContent", movies.toString())
         adapter.movies.clear()
         adapter.movies.addAll(movies)
         adapter.notifyDataSetChanged()

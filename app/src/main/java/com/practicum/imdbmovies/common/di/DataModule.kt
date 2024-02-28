@@ -1,17 +1,16 @@
 package com.practicum.imdbmovies.common.di
 
-import com.practicum.imdbmovies.data.LocalStorage
-import com.practicum.imdbmovies.data.NetworkClient
-import com.practicum.imdbmovies.data.dto.MoviesRepositoryImpl
+import com.practicum.imdbmovies.data.storage.FavoriteStorage
+import com.practicum.imdbmovies.data.network.NetworkClient
+import com.practicum.imdbmovies.data.impl.MoviesRepositoryImpl
 import com.practicum.imdbmovies.data.network.RetrofitNetworkClient
 import com.practicum.imdbmovies.domain.api.MoviesRepository
 import org.koin.dsl.module
-import kotlin.math.sin
 
 val dataModule = module {
 
     single<MoviesRepository> {
-        MoviesRepositoryImpl(get(), get())
+        MoviesRepositoryImpl(get(), get(), get())
     }
 
     single<NetworkClient> {
@@ -19,7 +18,7 @@ val dataModule = module {
     }
 
     single {
-        LocalStorage(get())
+        FavoriteStorage(get())
     }
 
 }

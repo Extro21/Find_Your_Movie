@@ -1,11 +1,8 @@
 package com.practicum.imdbmovies
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.practicum.imdbmovies.databinding.ActivityRootBinding
 
 class RootActivity : AppCompatActivity() {
@@ -18,6 +15,8 @@ class RootActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         _binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        supportActionBar?.title = getString(R.string.name_title)
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.container_view) as NavHostFragment
         val navController = navHostFragment.navController

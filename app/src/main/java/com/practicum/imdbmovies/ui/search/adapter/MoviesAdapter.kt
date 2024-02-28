@@ -1,4 +1,4 @@
-package com.practicum.imdbmovies.ui.movies.adapter
+package com.practicum.imdbmovies.ui.search.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
