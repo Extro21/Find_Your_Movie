@@ -15,6 +15,9 @@
         <action
             android:id="@+id/action_moviesFragment_to_detailsFragment"
             app:destination="@id/detailsFragment" />
+        <action
+            android:id="@+id/action_moviesFragment_to_posterDetailsFragment"
+            app:destination="@id/posterDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/posterFragment"
@@ -26,4 +29,9 @@
         android:name="com.practicum.imdbmovies.ui.details.DetailsFragment"
         android:label="details_fragment"
         tools:layout="@layout/details_fragment" />
+    <fragment
+        android:id="@+id/posterDetailsFragment"
+        android:name="com.practicum.imdbmovies.ui.PosterDetailsFragment"
+        android:label="poster_deteils_fragment"
+        tools:layout="@layout/poster_deteils_fragment" />
 </navigation>
