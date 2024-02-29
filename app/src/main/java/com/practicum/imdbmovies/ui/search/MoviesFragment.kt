@@ -15,7 +15,7 @@ import com.practicum.imdbmovies.R
 import com.practicum.imdbmovies.databinding.FragmentMoviesBinding
 import com.practicum.imdbmovies.domain.models.KinopoiskModel
 import com.practicum.imdbmovies.ui.MoviesState
-import com.practicum.imdbmovies.ui.details.DetailsFragment
+import com.practicum.imdbmovies.ui.PosterDetailsFragment
 import com.practicum.imdbmovies.ui.search.adapter.MoviesAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -34,12 +34,8 @@ class MoviesFragment : Fragment() {
         object  : MoviesAdapter.MovieClickListener {
             override fun onMovieClick(movie: KinopoiskModel) {
                 if (clickDebounce()) {
-//                    findNavController().navigate(R.id.action_moviesFragment_to_posterFragment,
-//                        PosterFragment.createArgs(movie.image)
-//                    )
-                    findNavController().navigate(R.id.action_moviesFragment_to_detailsFragment,
-                        DetailsFragment.createArgs(movie.id)
-                    )
+                    findNavController().navigate(R.id.action_moviesFragment_to_posterDetailsFragment,
+                        PosterDetailsFragment.createArgs(movie.image, movie.id))
                 }
             }
 

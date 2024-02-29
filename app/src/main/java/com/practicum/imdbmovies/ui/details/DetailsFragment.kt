@@ -10,6 +10,7 @@ import com.practicum.imdbmovies.R
 import com.practicum.imdbmovies.databinding.DetailsFragmentBinding
 import com.practicum.imdbmovies.domain.models.DetailsModel
 import com.practicum.imdbmovies.ui.DetailsState
+import com.practicum.imdbmovies.ui.ERROR_ID
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 const val EXTRA_ID = "id_movies"
@@ -34,16 +35,21 @@ class DetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val idMovie = requireArguments().getString(EXTRA_ID)
+        if(idMovie == ERROR_ID) {
 
-        idMovie?.let { viewModel.searchRequest(it) }
+        } else {
+            idMovie?.let { viewModel.searchRequest(it) }
 
-        viewModel.observeState().observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is DetailsState.Content -> showContent(state.movie)
-                is DetailsState.Error -> binding.errorMessage.text =
-                    getString(R.string.nothing_internet)
+            viewModel.observeState().observe(viewLifecycleOwner) { state ->
+                when (state) {
+                    is DetailsState.Content -> showContent(state.movie)
+                    is DetailsState.Error -> binding.errorMessage.text =
+                        getString(R.string.nothing_internet)
+                }
             }
         }
+
+
 
     }
 
@@ -70,6 +76,17 @@ class DetailsFragment : Fragment() {
         ): Bundle = bundleOf(
             EXTRA_ID to id
         )
+
+//        @JvmStatic
+//        fun newInstance() =
+//            DetailsFragment()
+
+        fun newInstance(id: String) =
+            DetailsFragment().apply {
+                arguments = Bundle().apply {
+                    putString(EXTRA_ID, id)
+                }
+            }
     }
 
 }
