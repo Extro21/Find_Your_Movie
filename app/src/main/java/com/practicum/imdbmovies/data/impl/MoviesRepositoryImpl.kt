@@ -10,6 +10,7 @@ import com.practicum.imdbmovies.data.search.KinopoiskSearchResponse
 import com.practicum.imdbmovies.data.details.MovieDetailsRequest
 import com.practicum.imdbmovies.data.search.MoviesSearchRequest
 import com.practicum.imdbmovies.domain.api.MoviesRepository
+import com.practicum.imdbmovies.domain.models.CastsModel
 import com.practicum.imdbmovies.domain.models.DetailsModel
 import com.practicum.imdbmovies.domain.models.KinopoiskModel
 import com.practicum.imdbmovies.util.Resource
@@ -77,7 +78,8 @@ class MoviesRepositoryImpl(
                         genres = genres.joinToString(separator = ", ") { it.name.toString() },
                         director = mapCastsListToString(persons, DIRECTOR),
                         cast = mapCastsListToString(persons, ACTOR),
-                        writer = mapCastsListToString(persons, WRITER)
+                        writer = mapCastsListToString(persons, WRITER),
+                        persons = mapPersons(persons)
                     )
                     emit(Resource.Success(data = data))
                 }
@@ -85,6 +87,19 @@ class MoviesRepositoryImpl(
 
             else -> emit(Resource.Error(context.getString(R.string.nothing_found)))
         }
+    }
+
+    private fun mapPersons(casts : List<Person>?) : List<CastsModel>? {
+        return casts?.map { person ->
+            CastsModel(
+                id = person.id,
+                name = person.name,
+                photo = person.photo,
+                description = person.description,
+                profession = person.enProfession,
+            )
+        }
+
     }
 
     private fun mapCastsListToString(persons: List<Person>?, value: String): String? {

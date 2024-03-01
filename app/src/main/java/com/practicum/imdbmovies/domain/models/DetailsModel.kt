@@ -1,6 +1,6 @@
 package com.practicum.imdbmovies.domain.models
 
-data class DetailsModel (
+data class DetailsModel(
     val ageRating: Int?,
     val countries: String?,
     val description: String?,
@@ -8,14 +8,14 @@ data class DetailsModel (
     val genres: String?,
     val id: Int?,
     val name: String?,
-    //val persons: List<String>,
+    val persons: List<CastsModel>?,
     val rating: Double?,
     val shortDescription: String?,
    // val similarMovies: List<SimilarMovy>,
     val videos: String?,
     val year: Int?,
     val director: String?,
-    val cast : String?,
+    val cast: String?,
     val writer: String?,
 )
 
