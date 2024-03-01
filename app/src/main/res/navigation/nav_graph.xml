@@ -10,12 +10,6 @@
         android:label="fragment_movies"
         tools:layout="@layout/fragment_movies" >
         <action
-            android:id="@+id/action_moviesFragment_to_posterFragment"
-            app:destination="@id/posterFragment" />
-        <action
-            android:id="@+id/action_moviesFragment_to_detailsFragment"
-            app:destination="@id/detailsFragment" />
-        <action
             android:id="@+id/action_moviesFragment_to_posterDetailsFragment"
             app:destination="@id/posterDetailsFragment" />
     </fragment>
@@ -33,5 +27,14 @@
         android:id="@+id/posterDetailsFragment"
         android:name="com.practicum.imdbmovies.ui.PosterDetailsFragment"
         android:label="poster_deteils_fragment"
-        tools:layout="@layout/poster_deteils_fragment" />
+        tools:layout="@layout/poster_deteils_fragment" >
+        <action
+            android:id="@+id/action_posterDetailsFragment_to_castsFragment"
+            app:destination="@id/castsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/castsFragment"
+        android:name="com.practicum.imdbmovies.ui.casts.CastsFragment"
+        android:label="casts_fragment"
+        tools:layout="@layout/casts_fragment" />
 </navigation>

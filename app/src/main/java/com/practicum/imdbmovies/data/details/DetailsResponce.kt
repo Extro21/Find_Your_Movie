@@ -10,7 +10,6 @@ data class DetailsResponse(
     val genres: List<Genre>,
     val id: Int?,
     val name: String?,
-   // val persons: List<Person>,
     val rating: Rating?,
     val shortDescription: String?,
     val similarMovies: List<SimilarMovy>?,
@@ -29,6 +28,7 @@ data class Genre(
 )
 
 data class Person(
+    val id : String,
     val description: String?,
     val name: String?,
     val photo: String?,

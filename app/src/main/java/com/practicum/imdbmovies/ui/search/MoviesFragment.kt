@@ -119,9 +119,8 @@ class MoviesFragment : Fragment() {
         moviesList.visibility = View.VISIBLE
         placeholderMessage.visibility = View.GONE
         progressBar.visibility = View.GONE
-        adapter.movies.clear()
-        adapter.movies.addAll(movies)
-        adapter.notifyDataSetChanged()
+       // adapter.movies.clear()
+        adapter.updateData(movies)
     }
 
     private fun clickDebounce(): Boolean {
